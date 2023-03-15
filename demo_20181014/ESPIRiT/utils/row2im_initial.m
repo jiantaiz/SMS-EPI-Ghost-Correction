@@ -1,12 +1,13 @@
-%% from ESPIRiT open sources (http://www.eecs.berkeley.edu/~mlustig/Software.html)
-
 function [res,W] = row2im(mtx,imSize, winSize)
+%[res,W] = row2im(mtx,imSize, winSize);
 
-sz = imSize(3);
+sz = size(mtx,3);
 sx = imSize(1); sy = imSize(2);
-res = zeros(imSize(1),imSize(2),imSize(3));
+res = zeros(imSize(1),imSize(2),sz);
 W = res;
-mtx = reshape(mtx,size(mtx,1),[],sz);
+
+
+
 count=0;
 for y=1:winSize(2)
     for x=1:winSize(1)
