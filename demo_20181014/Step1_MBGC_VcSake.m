@@ -36,7 +36,7 @@ for iSlice=1:20
     mask(:,1:nSeg:end) = 1;
     DATA2recon=DATA.* repmat(mask,[1,1,size(DATA,3)]);
     DATAc = DATA;
-    calibc = crop(DATAc,[ncalib,ncalib,size(DATA,3)]);
+    calibc = crop(DATAc,[ncalib,ncalib,size(DATA,3)]); %取中心的数据
     
     %% Perform SAKE reconstruction to recover the calibration area
     im = ifft2c(DATAc);
@@ -46,9 +46,9 @@ for iSlice=1:20
     calib_sake(:,:,end/2+1:end)=circshift(calib_sake(:,:,end/2+1:end),[0 1]);
     calib_sake(:,:,end*3/4+1:end)=circshift(calib_sake(:,:,end*3/4+1:end),[0 1]);
     epi_kxkyzc_2shot_sakeCor_fullCoils(:,:,iSlice,:)= calib_sake;
-    a=pos_neg_add(ifft2c(calib_sake(:,:,1:end/4)),ifft2c(calib_sake(:,:,end/4+1:end/2)));
-    b=pos_neg_add(ifft2c(calib_sake(:,:,end/2+1:end*3/4)),ifft2c(calib_sake(:,:,end*3/4+1:end)));
-    epi_kxkyzc_2shot_sakeCor(:,:,iSlice,:)=fft2c(pos_neg_add(a,b))/4;
+    a=LmyGhostCorrection.pos_neg_add(ifft2c(calib_sake(:,:,1:end/4)),ifft2c(calib_sake(:,:,end/4+1:end/2)));
+    b=LmyGhostCorrection.pos_neg_add(ifft2c(calib_sake(:,:,end/2+1:end*3/4)),ifft2c(calib_sake(:,:,end*3/4+1:end)));
+    epi_kxkyzc_2shot_sakeCor(:,:,iSlice,:)=fft2c(LmyGhostCorrection.pos_neg_add(a,b))/4;
 end
 disp('Done')
 figure();LmyUtility.MY_montage((sos(ifft2c(crop(epi_kxkyzc_2shot_lpcCor,[48,48,20,32])))),'displayrange',[0 200]);title('LPC')
@@ -64,4 +64,4 @@ figure();LmyUtility.MY_montage(db(sos(ifft2c(epi_kxkyzc_2shot_sakeCor))));title(
 %%
 save_name = 'SbData_48kx48ky_sake.mat';
 warning('results not saved')
-% save(fullfile(load_folder,save_name),'epi_kxkyzc_2shot_sakeCor')
+save(fullfile(load_folder,save_name),'epi_kxkyzc_2shot_sakeCor')
